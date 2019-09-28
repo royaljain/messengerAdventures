@@ -1,0 +1,17 @@
+{
+	"components": [
+						{
+							"type": "svg_component",
+							"folderPath": "components/svg_components",
+							"mainClass": "board",
+							"data": [] 
+						},
+						{
+							"type": "header_component",
+							"folderPath": "components/typography_components",
+							"mainClass": "header",
+							"data": [] 
+						}
+
+				  ]
+}
