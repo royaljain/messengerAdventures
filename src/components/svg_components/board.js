@@ -10,7 +10,8 @@ export default class Board extends Component {
 	constructor(props){
 		super(props);
 		this.state = {
-			tool: 'none'
+			tool: 'none',
+			components: []
 		}
 
 		this.chooseTool = this.chooseTool.bind(this);
@@ -23,9 +24,39 @@ export default class Board extends Component {
 		}
 	}
 
+    componentDidMount(){
+
+        var svg = d3.select(this.svg);
+ 		var reference = this;
+
+
+        svg.on("click", createComponent)
+
+        function createComponent(){
+
+          var coords = d3.mouse(this);
+
+          var x = String(coords[0]);
+          var y = String(coords[1]);
+          var r = "2";
+    	  var tool = reference.state.tool;
+    	  var components = reference.state.components;
+
+          if (tool === "compass"){
+          	console.log("Adding compass")
+          	reference.setState({components: components.concat([(<Compass x={x} y={y} r={r}/>)])})
+          }
+          if (tool === "line"){
+          	console.log("Adding Line")
+          	reference.setState({components: components.concat([(<Line x1={x} y1={y} x2={x} y2={y} />)])})
+          }
+        }
+    }
+
 
 	chooseTool(toolType){
-		return () => {console.log("ToolType : " + toolType); this.setState({tool: toolType});}
+		var reference = this;
+		return () => {reference.setState({tool: toolType});}
 	}
 
 	getButton(buttonType){
@@ -48,14 +79,15 @@ export default class Board extends Component {
 
 
 	render(){
+
 		return (
 		  <Grid container direction="column">
 		  	  <Grid item container direction="row">
 		  	  	{this.buttons}
 		  	  </Grid>
 		  	  <Grid item>
-				  <svg width="100%" height="100%" viewBox="0 0 100 100">
-				  	<Compass x="50"  y="50" r="10"/>
+				  <svg ref={svg => this.svg = svg} width="100%" height="100%" viewBox="0 0 100 100">
+				  	{this.state.components}
 				  </svg>
 			  </Grid>
 		  </Grid>
