@@ -3,7 +3,7 @@ import rootReducer from './../reducers/root_reducer.js'
 
 
 const initialState = {
-  svg_components: []
+  'svg_components': {}
 };
 
 const store = createStore(rootReducer, initialState);

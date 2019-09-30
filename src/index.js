@@ -10,7 +10,7 @@ class App extends Component {
   render(){
     return (
 	  <Provider store={store}>
-		<Container maxWidth="md">
+		<Container maxWidth="md" style={{"marginTop": "25px"}}>
 	    	<DrawParallelLine />
       	</Container>
 	  </Provider>

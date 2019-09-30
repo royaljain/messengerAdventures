@@ -1,17 +1,19 @@
-import { ADD_COMPASS } from "./../actions/action_types.js";
+import { ADD_COMPASS, ADD_LINE } from "./../actions/action_types.js";
 
 
 function rootReducer(state = initialState, action) {
 
   console.log(state);
+  var cloneObj = Object.assign({}, state)
   
   if (action.type === ADD_COMPASS) {
-     return Object.assign({}, state, {
-      articles: state.svg_components.concat(action)
-    });
+     cloneObj['svg_components'][action.id] = action
   }
+  else if (action.type === ADD_LINE) {
+     cloneObj['svg_components'][action.id] = action
+  };
 
-  return state;
+  return cloneObj;
 }
 
 export default rootReducer;

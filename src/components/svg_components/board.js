@@ -2,6 +2,8 @@ import React, { Component } from "react";
 import Compass from './compass.js';
 import Line from './line.js';
 import Grid from '@material-ui/core/Grid';
+import Button from '@material-ui/core/Button';
+//import uuidv4 from './../../utils/math.js';
 
 
 
@@ -9,9 +11,10 @@ export default class Board extends Component {
 
 	constructor(props){
 		super(props);
+
 		this.state = {
 			tool: 'none',
-			components: []
+			components: this.buildComponents(props.initialComponents)
 		}
 
 		this.chooseTool = this.chooseTool.bind(this);
@@ -24,11 +27,26 @@ export default class Board extends Component {
 		}
 	}
 
+    uuidv4() {
+	  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+	    var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
+	    return v.toString(16);
+	  })
+	}
+
+	buildComponents(intialComponents){
+		return intialComponents.map(intialComponent => {
+			if (intialComponent.type === "line"){
+				return (<Line id={intialComponent.id} x1={intialComponent.x1} y1={intialComponent.y1} x2={intialComponent.x2} y2={intialComponent.y2} />)
+			}
+		})
+	}
+
+
     componentDidMount(){
 
         var svg = d3.select(this.svg);
  		var reference = this;
-
 
         svg.on("click", createComponent)
 
@@ -38,17 +56,17 @@ export default class Board extends Component {
 
           var x = String(coords[0]);
           var y = String(coords[1]);
-          var r = "2";
+          var r = "8";
     	  var tool = reference.state.tool;
     	  var components = reference.state.components;
 
           if (tool === "compass"){
           	console.log("Adding compass")
-          	reference.setState({components: components.concat([(<Compass x={x} y={y} r={r}/>)])})
+          	reference.setState({components: components.concat([(<Compass id={reference.uuidv4()} x={x} y={y} r={r}/>)])})
           }
           if (tool === "line"){
           	console.log("Adding Line")
-          	reference.setState({components: components.concat([(<Line x1={x} y1={y} x2={x} y2={y} />)])})
+          	reference.setState({components: components.concat([(<Line id={reference.uuidv4()} x1={x} y1={y} x2={x} y2={y} />)])})
           }
         }
     }
@@ -65,13 +83,13 @@ export default class Board extends Component {
 
 	  switch(buttonType) {
 	    case 'compass':
-	      buttonStr = <button key="compass" type="button" onClick={this.chooseTool('compass')}>Compass</button>; 
+	      buttonStr = <Button color="secondary" variant="contained" key="compass" onClick={this.chooseTool('compass')}>Compass</Button>; 
 	      break;
 	    case 'line':
-	      buttonStr = <button key="line" type="button" onClick={this.chooseTool('line')}>Line</button>; 
+	      buttonStr = <Button color="secondary" variant="contained" key="line" onClick={this.chooseTool('line')}>Line</Button>; 
 	      break;
 	    default:
-	      buttonStr = <button key="None" type="button" onClick={this.chooseTool('none')}>Pointer</button>;
+	      buttonStr = <Button  color="secondary" variant="contained" key="None" onClick={this.chooseTool('none')}>Pointer</Button>;
   		}
 
   		return <Grid item>{buttonStr}</Grid>
@@ -81,15 +99,16 @@ export default class Board extends Component {
 	render(){
 
 		return (
-		  <Grid container direction="column">
-		  	  <Grid item container direction="row">
-		  	  	{this.buttons}
-		  	  </Grid>
-		  	  <Grid item>
-				  <svg ref={svg => this.svg = svg} width="100%" height="100%" viewBox="0 0 100 100">
+		  <Grid item container direction="row" spacing={2} justify="center">
+		  	<Grid item xs={10} style={this.props.boardStyle}>
+				<svg ref={svg => this.svg = svg} height="100%" width="100%">
+			        <rect width="100%" height="100%" fill="#dedede"/>
 				  	{this.state.components}
-				  </svg>
-			  </Grid>
+				</svg>
+    		</Grid>
+   	  	    <Grid item xs={2} height="100%" container direction="column" justify="center" spacing={2} >
+	  	  	  {this.buttons}
+	  	    </Grid>
 		  </Grid>
 		);
 	}
